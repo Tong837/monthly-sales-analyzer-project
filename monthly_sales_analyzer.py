@@ -99,6 +99,7 @@ def worst_selling_day(data):
         return None  
     worst_day = data[0]["day"]
     min_sales = data[0]["product_a"] + data[0]["product_b"] + data[0]["product_c"]
+    
     for day_data in data[1:]:  
         total_sales = day_data["product_a"] + day_data["product_b"] + day_data["product_c"]
         if total_sales < min_sales:
@@ -138,7 +139,7 @@ print("Total sales of product_a:", total_sales_by_product(sales_data, "product_a
 print("Average daily sales of product_b:", average_daily_sales(sales_data, "product_b"))
 print("Day with highest total sales:", best_selling_day(sales_data))
 print("Days when product_c exceeded 300 sales:", days_above_threshold(sales_data, "product_c", 300))
-print("Product with highest total sales:", top_product(sales_data))
+print("Product with highest totagit pushl sales:", top_product(sales_data))
 print("Day with lowest total sales:", worst_selling_day(sales_data))
 print("Top 3 total sales sorted by days", top_3_days(sales_data))
 print("Sales range (max - min) of a product:",sales_range(sales_data, "product_c"))
