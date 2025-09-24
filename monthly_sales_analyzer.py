@@ -33,11 +33,15 @@ def total_sales_by_product(data, product_key):
     pass
 
 
+
 def average_daily_sales(data, product_key):
     """Calculates the average daily sales of a specific product."""
     total_sales = total_sales_by_product(data, product_key)
-    number_of_days = len(data) 
+    #porque len(data) en number_of_days -- ¿CÓMO SÉ QUE LEN(DATA) ME CALCULA EL NUMERO DE DIAS? ¿DE DONDE SACA LA INFO? ¿LEE CUANTAS LINEAS TIENE EL DICCIONARIO?
+    number_of_days = len(data)  #¿LEE CUANTAS FILAS HAY EN LA DATA? POR ESO ME DEVUELVE 20 DIAS?
     average = total_sales / number_of_days 
+    
+    #Me aseguro de que devuelva algo en el caso de que la lista no tenga datos
     if number_of_days > 0:
         return average
     else:
@@ -55,26 +59,35 @@ def average_daily_sales(data, product_key):
 
 def best_selling_day(data):
     """Finds the day with the highest total sales."""
-    best_day=None
+   #Esta función funcionara especificamente para la lista "sales_data" ya que le estoy pasando los parametros concretos (key) del nombre de los productos. 
+   #Hago que busque coincidencias de las calves para  extraer los valores(value) en ese diccionario concreto.
+
+    best_day=""
     max_sales=0
     for i in data:
-        total_sales = i["product_a"]+i["product_b"]+i["product_c"]
-        if total_sales > max_sales:
-            best_day=i["day"]
-            max_sales=total_sales
+        #SUMO TODOS LAS VENTAS DE TODOS LOS PRODUCTS
+        total_sales_by_day = i["product_a"]+i["product_b"]+i["product_c"]
+
+        if total_sales_by_day > max_sales:
+            max_sales = total_sales_by_day #NO ENTIENDO BIEN ESTA PARTE ¿QUÉ APORTA AL CONDICIONAL?
+            best_day = i["day"] #Le indico dónde buscar el día de mejor venta apartir del cúmulo de las ventas totales 
+            
     return best_day
     pass
-
+#print("Day with highest total sales:", best_selling_day(sales_data))
+#Day with highest total sales: 12
 
 def days_above_threshold(data, product_key, threshold):
     """Counts how many days the sales of a product exceeded a given threshold."""
     counter=0
-    for i in data:
-        if i[product_key] > threshold:
+    for days in data:
+        if days[product_key] > threshold:
             counter +=1
     return counter
     pass
-
+#print("Days when product_c exceeded 300 sales:", days_above_threshold(sales_data, "product_c", 300))
+#El valor threshold te lo da el print como parámetro al pasar la función: 300
+#Days when product_c exceeded 300 sales: 8 DIAS DEL TOTAL DE 20 LAS VENTAS HAN SUPERADO 300€
 
 def top_product(data):
     """Determines which product had the highest total sales in 30 days."""
@@ -135,7 +148,7 @@ def sales_range(data, product_key):
 
 
 # Function tests
-print("Total sales of product_a:", total_sales_by_product(sales_data, "product_a"))
+print("Total sales of product_a:", total_sales_by_product(sales_data, "product_b"))
 print("Average daily sales of product_b:", average_daily_sales(sales_data, "product_b"))
 print("Day with highest total sales:", best_selling_day(sales_data))
 print("Days when product_c exceeded 300 sales:", days_above_threshold(sales_data, "product_c", 300))
