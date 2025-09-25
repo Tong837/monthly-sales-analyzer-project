@@ -64,14 +64,14 @@ def best_selling_day(data):
    #Esta función funcionara especificamente para la lista "sales_data" ya que le estoy pasando los parametros concretos (key) del nombre de los productos. 
    #Hago que busque coincidencias de las calves para  extraer los valores(value) en ese diccionario concreto.
 
-    best_day=""
-    max_sales=0
+    best_day = ""
+    max_sales = 0
     for i in data:
-        #SUMO TODOS LAS VENTAS DE TODOS LOS PRODUCTS
-        total_sales_by_day = i["product_a"]+i["product_b"]+i["product_c"]
-
+        #En esta variable sumara con funcion sum(): 1er parametro especifica que tiene que buscar la key en el diccionario dado
+                                                    #2o parametro dice a la función que coga los valores/items de la data iterada si son diferentes a "day", así solo recogerá las ventas.
+        total_sales_by_day = sum(value for key, value in i.items() if key != "day") #-sum(parametro recorrer, punto de partida y condiciono la busqueda)
         if total_sales_by_day > max_sales:
-            max_sales = total_sales_by_day #NO ENTIENDO BIEN ESTA PARTE ¿QUÉ APORTA AL CONDICIONAL?
+            max_sales = total_sales_by_day #NO ENTIENDO BIEN ESTA PARTE ¿QUÉ APORTA AL CONDICIONAL? -- Actualizo el max_sales si es mayor a total_sales_by_day
             best_day = i["day"] #Le indico dónde buscar el día de mejor venta apartir del cúmulo de las ventas totales 
             
     return best_day
@@ -81,10 +81,10 @@ def best_selling_day(data):
 
 def days_above_threshold(data, product_key, threshold):
     """Counts how many days the sales of a product exceeded a given threshold."""
-    counter=0
+    counter = 0
     for days in data:
         if days[product_key] > threshold:
-            counter +=1
+            counter += 1
     return counter
     pass
 #print("Days when product_c exceeded 300 sales:", days_above_threshold(sales_data, "product_c", 300))
@@ -93,63 +93,58 @@ def days_above_threshold(data, product_key, threshold):
 
 def top_product(data):
     """Determines which product had the highest total sales in 30 days."""
-    #Inicializo las variables para acumular el total de las ventas de los productos
-    total_sales_a=0
-    total_sales_b=0
-    total_sales_c=0
-    #Con el bucle recorro la lista y acumulo en las variables el total de cada producto haciendo llamada a cada key específica de la lista.
-    for i in data:
-        total_sales_a += i["product_a"]
-        total_sales_b += i["product_b"]
-        total_sales_c += i["product_c"]
-        #Aplico estructura de condicionales usando los operadores lógicos(>) y de expresión (and). 
-        #En cada vuelta del condicional clasificará las ventas según el número más alto.
-        if total_sales_a > total_sales_b and total_sales_a > total_sales_c: #Si producto a es mayor a b y c entonces devuelve producto a
-            return "product_a"
-        elif total_sales_b > total_sales_a and total_sales_b > total_sales_c: #Aquí ya sabemos que si se ejecuta este elif, el producto a no será el de mayor ventas
-            return "product_b"
-        else: #Si ninguna de las otras conciones se cumple, entonces el total mayor de ventas será el producto c
-            return "product_c"
+   
+    product_sales = {}  #Inicializo las variables para acumular el total de las ventas de los productos
+   
+    for i in data:  #Con este bucle recorro la data que será la lista-diccionario de ventas por dias.
+        for key,value in i.items(): #Este bucle lee la clave/valor de cada item(elemento) del diccionario.
+            if key !="day": #Decimos que ignore la clave de día ya que sus valores no aportan info para el calculo.
+                if key not in product_sales: #Cómo he creado un diccionario vacío para acumular las ventas totales sin le item "day" necesito rellenarlo con key/value de la lista que lea
+                    product_sales[key] = 0 #Inicializo el diccionario para que busque la key de la lista que pasaremos.
+                    product_sales[key] += value #Se acumulan las ventas del producto especificado en el print a cad vuelta del bucle.
+    top_item = max(product_sales,key = product_sales.get) #Esta variable saca el producto con la suma mas alta.
+    #---FUNCIÓN max(), Retorna el elemento mayor en un iterable o el mayor de dos o más argumentos como en este caso.
+        #Parámetros utilizados: max(diccionario, key = diccionario.get)
+    #---FUNCIÓN .get -> dict.get, Retorna el elemento dentro de "dict" almacenado utilizando "key" para leer los clave/valor.
+        #Parámetros utilizados: diccionario.get
+    return top_item 
     pass
 
 def worst_selling_day(data):
     """Finds the day with the lowest total sales."""
     if not data: #Me aseguro de qué la función devuelva un resultado en el caso de que la lista este vacía (if not data in data...)
         print ("No hay datos en la lista") 
-   
-    #Con data me refiero al diccionario dado "sales_data" y [0] marca el primer elemento del diccionario y asi tendremos el valor de esa "key"("day")
-    #Inicializo esta variable como el primer peor día
-    worst_day = data[0]["day"] 
-    #En esta variable acumulo la suma total de las ventas de cada producto de todos los dias para averiguar cual será la venta mas baja
-    min_sales = data[0]["product_a"] + data[0]["product_b"] + data[0]["product_c"]
+
+    worst_day = data["day"] 
+    min_sales = total_sales_by_product
     
-    #Creo el bucle para comparar por días el total_sales con las min_sales por día
     for day_data in data:
-        #Creo otra variable con la misma suma de datos para poder compararlos en el condicional  
-        total_sales = day_data["product_a"] + day_data["product_b"] + day_data["product_c"]
        #Si las ventas totales son menores a las ventas mínimas el total sales pasará a ser la venta mínima.
-        if total_sales < min_sales:
-            min_sales = total_sales #Aquí se actualiza el valor mínimo seteando a través del bucle que ese peor día pertece al día checkeado cada línea de código
-                                    #Solo si el dia que comprueba tiene total_sales menores al dato de la actualización anterior
-            worst_day = day_data["day"] #Al actualizarse min_sales como el bucle recorre el diccionario por filas, este entenderá que la ultima actu de min_sales 
-                                        #Es también el peor día ya que he escrito esa linea justo debajo, este condional condiciona las tres variables y actualiza min_sales a la par de worst_day
+        if total_sales_by_product < min_sales:
+            min_sales = day_data[total_sales_by_product] 
+            worst_day = day_data["day"] #¿?¿?Al actualizarse min_sales como el bucle recorre el diccionario por filas, este entenderá que la ultima actu de min_sales 
+                                        #¿?¿?Es también el peor día ya que he escrito esa linea justo debajo, este condional condiciona las tres variables y actualiza min_sales a la par de worst_day
     return worst_day
     pass
 
 def top_3_days(data):
     """Sorts days by total sales and shows the top 3."""
     #Creo una lista vacía para acumulas los datos y poder filtrar los tres mejores resultados
-    list_total_sales = []
+    top_3_sales = []
+    total_sales_by_product = []
+    for i in data: #El bucle recorre el diccionario acumulando la suma de las ventas generales
+       total_sales_by_product.append(i["day"]) #Aquí reutilizo la lista de la función creada del programa para y añadiendo la función .append() creo una tupla dentro de la lista.
+                                               #La tupla añade la info del dia a la data que ya tenemos de las ventas totales por producto.
+    #---MÉTODO list.append(), Agrega un elemento al final de la lista
+    #---Parámetros utilizados:
 
-    #Recorro el diccionario acumulando la suma de las ventas generales
-    for i in data:
-        total_sales = i["product_a"] + i["product_b"] + i["product_c"] #¿PODRÍA UTILIZAR TOTAL_SALES.SUM(DATA)?
-        list_total_sales.append((i["day"], total_sales)) #Aquí relleno la lista vacía. Añadiendo con la función .append una tupla dentro de la lista
-    list_total_sales.sort(key=lambda x: x[1], reverse=True) #Con la función .sort ordeno los datos. Utilizo lambda para poder ordenar los datos en una sola linea de código.
-                                                            #Aplicando lamdba a key le digo que trabaje con elemto x y le especifico la posición del elemento (el segundo elemento [1])
-                                                            #Reverse=True, ya que por defecto (false) los datos se ordenan de ascendente necesito cambiar ese orden de mayor a menor
-   #Filtro la lista al devolver los datos. "[:3]"" saca los 3 primeros datos que ya estan ordenados de froma descendente.
-    return list_total_sales[:3]
+    list_total_sales.sort(key = lambda x: x[1], reverse=True) #Con la función .sort ordeno los datos. Utilizo lambda para poder ordenar los datos en una sola linea de código.
+    #---MÉTODO sort(), Retorna una nueva lista ordenada a partir de los elementos que itera.
+    #---Parámetros utilizados: .sort(key = función item: item[1])
+    #---FUNCIÓN lamdba(), Aplicando lamdba a key le digo que trabaje con elemto x y le especifico la posición del elemento (el segundo elemento [1])
+    #---Parámetros utilizados: Reverse=True, ya que por defecto (false) los datos se ordenan de ascendente necesito cambiar ese orden de mayor a menor. 
+    
+    return top_3_sales[:3] #Filtro la lista al devolver los datos. "[:3]"" saca los 3 primeros datos que ya estan ordenados de froma descendente.
 
 def sales_range(data, product_key):
     """Calculates the sales range (max - min) of a product."""
