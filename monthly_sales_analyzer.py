@@ -136,9 +136,9 @@ def top_3_days(data):
        total_sales_by_product.append(i["day"]) #Aquí reutilizo la lista de la función creada del programa para y añadiendo la función .append() creo una tupla dentro de la lista.
                                                #La tupla añade la info del dia a la data que ya tenemos de las ventas totales por producto.
     #---MÉTODO list.append(), Agrega un elemento al final de la lista
-    #---Parámetros utilizados:
+    #---Parámetros utilizados: Añado la info de un item de la lista de donde se pedira la info.
 
-    list_total_sales.sort(key = lambda x: x[1], reverse=True) #Con la función .sort ordeno los datos. Utilizo lambda para poder ordenar los datos en una sola linea de código.
+    total_sales_by_product.sort(key = lambda x: x[1], reverse=True) #Con la función .sort ordeno los datos. Utilizo lambda para poder ordenar los datos en una sola linea de código.
     #---MÉTODO sort(), Retorna una nueva lista ordenada a partir de los elementos que itera.
     #---Parámetros utilizados: .sort(key = función item: item[1])
     #---FUNCIÓN lamdba(), Aplicando lamdba a key le digo que trabaje con elemto x y le especifico la posición del elemento (el segundo elemento [1])
