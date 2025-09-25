@@ -25,13 +25,15 @@ sales_data = [
 def total_sales_by_product(data, product_key):
     """Calculates the total sales of a specific product in 30 days."""
     total=0
-
+    #Recorro las ventas en la data especificada en el print.
     for sales in data:
+        #Condiciono que el producto que especificaremos este en data¿?
         if product_key in sales:
+            #Acumulo las ventas del procuto que se especifica en print()
             total += sales[product_key]
     return total
     pass
-
+#print("Total sales of product_a:", total_sales_by_product(sales_data, "product_a"))
 
 
 def average_daily_sales(data, product_key):
@@ -91,64 +93,86 @@ def days_above_threshold(data, product_key, threshold):
 
 def top_product(data):
     """Determines which product had the highest total sales in 30 days."""
+    #Inicializo las variables para acumular el total de las ventas de los productos
     total_sales_a=0
     total_sales_b=0
     total_sales_c=0
+    #Con el bucle recorro la lista y acumulo en las variables el total de cada producto haciendo llamada a cada key específica de la lista.
     for i in data:
         total_sales_a += i["product_a"]
         total_sales_b += i["product_b"]
         total_sales_c += i["product_c"]
-        if total_sales_a > total_sales_b and total_sales_a > total_sales_c:
+        #Aplico estructura de condicionales usando los operadores lógicos(>) y de expresión (and). 
+        #En cada vuelta del condicional clasificará las ventas según el número más alto.
+        if total_sales_a > total_sales_b and total_sales_a > total_sales_c: #Si producto a es mayor a b y c entonces devuelve producto a
             return "product_a"
-        elif total_sales_b > total_sales_a and total_sales_b > total_sales_c:
+        elif total_sales_b > total_sales_a and total_sales_b > total_sales_c: #Aquí ya sabemos que si se ejecuta este elif, el producto a no será el de mayor ventas
             return "product_b"
-        else:
+        else: #Si ninguna de las otras conciones se cumple, entonces el total mayor de ventas será el producto c
             return "product_c"
     pass
 
 def worst_selling_day(data):
     """Finds the day with the lowest total sales."""
-    if not data:
-        return None  
-    worst_day = data[0]["day"]
+    if not data: #Me aseguro de qué la función devuelva un resultado en el caso de que la lista este vacía (if not data in data...)
+        print ("No hay datos en la lista") 
+   
+    #Con data me refiero al diccionario dado "sales_data" y [0] marca el primer elemento del diccionario y asi tendremos el valor de esa "key"("day")
+    #Inicializo esta variable como el primer peor día
+    worst_day = data[0]["day"] 
+    #En esta variable acumulo la suma total de las ventas de cada producto de todos los dias para averiguar cual será la venta mas baja
     min_sales = data[0]["product_a"] + data[0]["product_b"] + data[0]["product_c"]
     
-    for day_data in data[1:]:  
+    #Creo el bucle para comparar por días el total_sales con las min_sales por día
+    for day_data in data:
+        #Creo otra variable con la misma suma de datos para poder compararlos en el condicional  
         total_sales = day_data["product_a"] + day_data["product_b"] + day_data["product_c"]
+       #Si las ventas totales son menores a las ventas mínimas el total sales pasará a ser la venta mínima.
         if total_sales < min_sales:
-            min_sales = total_sales
-            worst_day = day_data["day"]
+            min_sales = total_sales #Aquí se actualiza el valor mínimo seteando a través del bucle que ese peor día pertece al día checkeado cada línea de código
+                                    #Solo si el dia que comprueba tiene total_sales menores al dato de la actualización anterior
+            worst_day = day_data["day"] #Al actualizarse min_sales como el bucle recorre el diccionario por filas, este entenderá que la ultima actu de min_sales 
+                                        #Es también el peor día ya que he escrito esa linea justo debajo, este condional condiciona las tres variables y actualiza min_sales a la par de worst_day
     return worst_day
     pass
 
 def top_3_days(data):
     """Sorts days by total sales and shows the top 3."""
+    #Creo una lista vacía para acumulas los datos y poder filtrar los tres mejores resultados
     list_total_sales = []
 
+    #Recorro el diccionario acumulando la suma de las ventas generales
     for i in data:
-        total_sales = i["product_a"] + i["product_b"] + i["product_c"]
-        list_total_sales.append((i["day"], total_sales))
-    list_total_sales.sort(key=lambda x: x[1], reverse=True)
+        total_sales = i["product_a"] + i["product_b"] + i["product_c"] #¿PODRÍA UTILIZAR TOTAL_SALES.SUM(DATA)?
+        list_total_sales.append((i["day"], total_sales)) #Aquí relleno la lista vacía. Añadiendo con la función .append una tupla dentro de la lista
+    list_total_sales.sort(key=lambda x: x[1], reverse=True) #Con la función .sort ordeno los datos. Utilizo lambda para poder ordenar los datos en una sola linea de código.
+                                                            #Aplicando lamdba a key le digo que trabaje con elemto x y le especifico la posición del elemento (el segundo elemento [1])
+                                                            #Reverse=True, ya que por defecto (false) los datos se ordenan de ascendente necesito cambiar ese orden de mayor a menor
+   #Filtro la lista al devolver los datos. "[:3]"" saca los 3 primeros datos que ya estan ordenados de froma descendente.
     return list_total_sales[:3]
 
 def sales_range(data, product_key):
     """Calculates the sales range (max - min) of a product."""
-    min_ventas = float("inf")  
+    #Como no sé cuál puede ser el max de ventas inicializo la variable con un float infito negativo ¿PORQUE EL INFINITO NEGATIVO ENCUENTRA EL MAX?
+    min_ventas = 0  
     max_ventas = float("-inf")
 
+    #Para la info en la data las ventas serán los valores del producto (no entiendo bien que seria product_key, ¿COGE EL VALOR DE LA KEY?)
     for i in data:
         ventas = i[product_key]
+        #Condiciono que ese cumulo de ventas y se actalizan dentro de la variable ¿Si encontramos un valor menor o mayor al anterior comparado?
         if ventas < min_ventas:
             min_ventas = ventas
         if ventas > max_ventas:
             max_ventas = ventas
-
+    #Calculamos el rango, que será la diferencia entre el mínimo y el máximo para saber cuánto varian las ventas de un producto
+    #Si el rango es bajo, las ventas del producto serán estables. Al contrario si el rango es alto significa que el producto se vende de forma irregular.
     return max_ventas - min_ventas
 
 
 
 # Function tests
-print("Total sales of product_a:", total_sales_by_product(sales_data, "product_b"))
+print("Total sales of product_a:", total_sales_by_product(sales_data, "product_a"))
 print("Average daily sales of product_b:", average_daily_sales(sales_data, "product_b"))
 print("Day with highest total sales:", best_selling_day(sales_data))
 print("Days when product_c exceeded 300 sales:", days_above_threshold(sales_data, "product_c", 300))
