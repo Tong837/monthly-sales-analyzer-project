@@ -24,7 +24,7 @@ sales_data = [
 
 def total_sales_by_product(data, product_key):
     """Calculates the total sales of a specific product in 30 days."""
-    total=0
+    total = 0
     #Recorro las ventas en la data especificada en el print.
     for sales in data:
         #Condiciono que el producto que especificaremos este en data¿?
@@ -93,7 +93,9 @@ def days_above_threshold(data, product_key, threshold):
 
 def top_product(data):
     """Determines which product had the highest total sales in 30 days."""
-   
+    total_sales_a = total_sales_by_product
+    total_sales_b = total_sales_by_product
+
     product_sales = {}  #Inicializo las variables para acumular el total de las ventas de los productos
    
     for i in data:  #Con este bucle recorro la data que será la lista-diccionario de ventas por dias.
@@ -108,7 +110,7 @@ def top_product(data):
     #---FUNCIÓN .get -> dict.get, Retorna el elemento dentro de "dict" almacenado utilizando "key" para leer los clave/valor.
         #Parámetros utilizados: diccionario.get
     return top_item 
-    pass
+    
 
 def worst_selling_day(data):
     """Finds the day with the lowest total sales."""
